@@ -65,3 +65,6 @@ CMakeLists.txt.user*
 *.creator.user*
 
 # Qt Creator backups
+
+# Song
+*.wav
