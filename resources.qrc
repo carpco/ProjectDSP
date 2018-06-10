@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/imagenes">
+        <file>openwav.png</file>
+        <file>zero.png</file>
+        <file>reggae3.png</file>
+        <file>pop.png</file>
+        <file>club.png</file>
+        <file>classical.png</file>
+        <file>flat.jpg</file>
+        <file>fullbasstreble2.jpg</file>
+        <file>fulltreble2.jpg</file>
+        <file>dance2.png</file>
+        <file>techno2.jpg</file>
+        <file>rock4.png</file>
+    </qresource>
+</RCC>
