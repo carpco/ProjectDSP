@@ -118,6 +118,9 @@ private:
      void on_actionOpen_wav_triggered();
      void on_actionFlat_triggered();
      void on_actionZero_triggered();
+     void on_aSlider_valueChanged(int value);
+     void on_dSlider_valueChanged(int value);
+     void on_reverberatorCheckBox_stateChanged(int value);
 };
 
 

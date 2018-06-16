@@ -486,6 +486,41 @@ void MainWindow::on_actionZero_triggered()
 }
 
 /**
+ * @brief MainWindow::on_aSlider_valueChanged
+ * @param value
+ */
+void MainWindow::on_aSlider_valueChanged(int value){
+    if (!dspChanged_){
+        dspChanged_=true;
+    }
+    dsp_->updateReverbA(value);
+    this->repaint();
+}
+
+/**
+ * @brief MainWindow::on_dSlider_valueChanged
+ * @param value
+ */
+void MainWindow::on_dSlider_valueChanged(int value){
+    if (!dspChanged_){
+        dspChanged_=true;
+    }
+    dsp_->updateReverbD(value);
+    this->repaint();
+}
+
+/**
+ * @brief MainWindow::on_reverberatorCheckBox_stateChanged
+ * @param enabled
+ */
+void MainWindow::on_reverberatorCheckBox_stateChanged(int value){
+
+    _debug("Reverberation Changed" << std::endl);
+
+    dsp_->updateReverbEnabled(ui->reverberatorCheckBox->isChecked());
+    this->repaint();
+}
+/**
  * @brief MainWindow::paintEvent  Metodo que dibuja en la interfaz las lines y curvas que representan la magnitud de los filtros.
  * @param e
  */

@@ -138,6 +138,33 @@ void dspSystem::updateG16k(int value){
 }
 
 /**
+ * @brief dspSystem::updateReverbA Metodo que actualiza el escalamiento de la reverberacion
+ * @param value numero entero que representa la posicion del slider
+ */
+void dspSystem::updateReverbA(int value){
+
+    aReverb_ = value;
+}
+
+/**
+ * @brief dspSystem::updateReverbD Metodo que actualiza el retraso de la reverberacion
+ * @param value valor numero entero que representa la posicion del slider
+ */
+void dspSystem::updateReverbD(int value){
+
+    dReverb_ = value;
+}
+
+/**
+ * @brief dspSystem::updateReverbEnabled Metodo que actualiza si la reverberacion esta activada
+ * @param enabled booleano que representa si el check esta seleccionado
+ */
+void dspSystem::updateReverbEnabled(bool enabled){
+
+    reverbEnabled = enabled;
+}
+
+/**
  * Initialization function for the current filter plan
  */
 bool dspSystem::init(const int sampleRate,const int bufferSize) {
@@ -156,6 +183,9 @@ bool dspSystem::init(const int sampleRate,const int bufferSize) {
   g4k_ = 25;
   g8k_ = 25;
   g16k_ = 25;
+  aReverb_ = 35;
+  dReverb_ = 20;
+  reverbEnabled = true;
 
   delete cv_;
   cv_=new controlVolume();

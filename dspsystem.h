@@ -85,6 +85,13 @@ public:
   void updateG8k(int value);
   void updateG16k(int value);
 
+  /*
+   * Metodos que se utilizan en la reverberacion
+   */
+  void updateReverbA(int value);
+  void updateReverbD(int value);
+  void updateReverbEnabled(bool enabled);
+
   /**
    * Sample rate
    */
@@ -112,6 +119,11 @@ public:
   int g4k_;
   int g8k_;
   int g16k_;
+
+  // Constantes para la reverberacion
+  int aReverb_;
+  int dReverb_;
+  bool reverbEnabled;
 
   /**
    * control Volume
