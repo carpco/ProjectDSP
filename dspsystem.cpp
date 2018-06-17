@@ -183,8 +183,8 @@ bool dspSystem::init(const int sampleRate,const int bufferSize) {
   g4k_ = 25;
   g8k_ = 25;
   g16k_ = 25;
-  aReverb_ = 35;
-  dReverb_ = 20;
+  aReverb_ = 75;
+  dReverb_ = 1024;
   reverbEnabled = true;
 
   delete cv_;
@@ -202,7 +202,7 @@ bool dspSystem::process(float* in,float* out) {
   float* tmpIn = in;
   float* tmpOut = out;
 
-  cv_->filter(bufferSize_,volumeGain_,g32_,g64_,g125_,g250_,g500_,g1k_,g2k_,g4k_,g8k_,g16k_,tmpIn,tmpOut);
+  cv_->filter(bufferSize_,volumeGain_,g32_,g64_,g125_,g250_,g500_,g1k_,g2k_,g4k_,g8k_,g16k_,tmpIn,tmpOut,aReverb_, dReverb_, reverbEnabled);
 
   return true;
 }

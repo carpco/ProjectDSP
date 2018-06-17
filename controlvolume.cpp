@@ -66,6 +66,17 @@ controlVolume::controlVolume(){
     datos8k = new float[1024];
     datos16k = new float[1024];
 
+    tmpOut = new float[1024];
+
+    // Se inicializa el valor de la salida como 0
+    lastOut = new float[MAX_D];
+    lastReverb = new float[MAX_D];
+
+    for(int i = 0;i < MAX_D; i++){
+        lastOut[i] = 0.0;
+        lastReverb[i] = 0.0;
+    }
+
     //Inicializacion de los valores en los punteros de tipo double[2048][2]
     inicializarH32();
     inicializarH64();
@@ -486,7 +497,7 @@ void controlVolume::filtroGeneral(int blockSize, int volumeGain, float *in, floa
 * @param in puntero al arreglo de valores de tipo float que conforman la entrada del sistema.
 * @param out puntero a un arreglo de valores tipo float que conforman la salida del ecualizador y son enviados a la tarjeta de audio a reproducirse.
 */
-void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g125,int g250,int g500,int g1k,int g2k,int g4k,int g8k,int g16k, float *in, float *out){
+void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g125,int g250,int g500,int g1k,int g2k,int g4k,int g8k,int g16k, float *in, float *out, int aReverb, int dReverb, bool enabledReverb){
 
     //Se inicializan los punteros que almacenaran la salida de cada filtro.
     float* pf32 = new float[blockSize];
@@ -512,10 +523,37 @@ void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g12
     filtroGeneral(blockSize,g8k,in,pf8k,f8k,datos8k);
     filtroGeneral(blockSize,g16k,in,pf16k,f16k,datos16k);
 
+    // Se va a implementar el siguiente efecto de reverberacion
+    // y(n) = a * y(n - D) - a * x(n) + x(n - D)
+
     // Se define cada elemento de la salida como la suma de las salidas de los filtros para un n, escalado por una constante.
     for (int n=0; n<blockSize;++n){
 
-        out[n] = 0.02 * (volumeGain)*(pf32[n]+pf64[n]+pf125[n]+pf250[n]+pf500[n]+pf1k[n]+pf2k[n]+pf4k[n]+pf8k[n]+pf16k[n]);
+        tmpOut[n] = 0.02 * (volumeGain)*(pf32[n]+pf64[n]+pf125[n]+pf250[n]+pf500[n]+pf1k[n]+pf2k[n]+pf4k[n]+pf8k[n]+pf16k[n]);
+
+        // Reverberacion
+        if(enabledReverb){
+
+            float y_nD = (n < MAX_D)? lastReverb[n]:out[n-dReverb];
+            float x_nD = (n < MAX_D)? lastOut[n]:tmpOut[n-dReverb];
+
+            // y(n) = a * y(n - D) - a * x(n) + x(n - D)
+            // y(n) = reverb
+            // x(n) = tmpOut(n)
+            //final(n) = a * final(n-D) - a * out(n) + out(n-D)
+            out[n] = 0.01 * aReverb * y_nD - 0.01 * aReverb * tmpOut[n] + x_nD;
+
+            // y(n) = x(n) + a y(n - D)
+            //out[n] = 0.01 * aReverb * y_nD - 0.01 * aReverb * x_nD;
+        } else {
+            out[n] = tmpOut[n];
+        }
+
+        // Almacena los ultimos valores de salida
+        if(n >= blockSize - MAX_D - 1){
+            lastOut[n + MAX_D - blockSize] = tmpOut[n];
+            lastReverb[n + MAX_D - blockSize] = out[n];
+        }
     }
 
     //Al realizar el procedimiento una vez se define que ya no es el inicio de la cancion.

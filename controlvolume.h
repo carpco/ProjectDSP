@@ -56,7 +56,7 @@ public:
     fftw_complex *f8k;
     fftw_complex *f16k;
 
-    //Arreglos donde se almacenan las ultimas M-1 muestras del la salida anterior calculada. (Solapamiento y suma).
+    //Arreglos donde se almacenan las ultimas M-1 muestras del la salida anterior calculada. (Solapamiento y almacenamiento).
     float* datos32;
     float* datos64;
     float* datos125;
@@ -69,6 +69,12 @@ public:
     float* datos16k;
     bool inicio;
 
+    //Arreglo para almacenar los ultimos 40 valores de out
+    float* lastOut;
+    float* lastReverb;
+    float* tmpOut;
+
+    const int MAX_D = 1024;
     /**
      * Constructor
      */
@@ -95,6 +101,9 @@ public:
     * @param g16k valor entero que representa la posicion del slider asociado al filtro de 16kHz y escala el valor de la salida especifica de dicho filtro.
     * @param in puntero al arreglo de valores de tipo float que conforman la entrada del sistema.
     * @param out puntero a un arreglo de valores tipo float que conforman la salida del ecualizador y son enviados a la tarjeta de audio a reproducirse.
+    * @param aReverb
+    * @param dReverb
+    * @param enabledReverb
     */
    void filter(int blockSize,
                int volumeGain,
@@ -109,7 +118,10 @@ public:
                int g8k,
                int g16k,
                float* in,
-               float* out);
+               float* out,
+               int aReverb,
+               int dReverb,
+               bool enabledReverb);
 
    /**
     * @brief filtroGeneral Funcion encargada aplicar el filtrado por DFT a una arreglo de muestras de tipo float.
