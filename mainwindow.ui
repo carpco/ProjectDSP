@@ -1084,6 +1084,20 @@
       </item>
      </layout>
     </item>
+    <item>
+     <widget class="QComboBox" name="reverbComboBox">
+      <item>
+       <property name="text">
+        <string>Reverberador Paso Todo : y(n) = a * y(n - D) - a * x(n) + x(n - D)</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Reverberador Simple :  y(n) = x(n) + a * y(n - D)</string>
+       </property>
+      </item>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">

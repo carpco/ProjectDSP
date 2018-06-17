@@ -520,6 +520,13 @@ void MainWindow::on_reverberatorCheckBox_stateChanged(int value){
     dsp_->updateReverbEnabled(ui->reverberatorCheckBox->isChecked());
     this->repaint();
 }
+
+void MainWindow::on_reverbComboBox_currentIndexChanged(int value){
+
+    _debug("Reverberation Type: " << value << std::endl);
+
+    dsp_->updateReverbType(value);
+}
 /**
  * @brief MainWindow::paintEvent  Metodo que dibuja en la interfaz las lines y curvas que representan la magnitud de los filtros.
  * @param e

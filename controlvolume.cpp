@@ -465,7 +465,7 @@ void controlVolume::filtroGeneral(int blockSize, int volumeGain, float *in, floa
     // CAMBIO
     // Se almacenan los valores actuales en la salida (a partir de M-1), utilizando la ganancia del filtro
     for(int i=0; i<blockSize;i++){
-
+       //out[i] = static_cast<float>(0.02 * (volumeGain)* (y[blockSize+i][REAL]/Div));
        out[i] = static_cast<float>(0.02 * (volumeGain)* (y[blockSize+i][REAL]/Div));
 
     }
@@ -497,7 +497,7 @@ void controlVolume::filtroGeneral(int blockSize, int volumeGain, float *in, floa
 * @param in puntero al arreglo de valores de tipo float que conforman la entrada del sistema.
 * @param out puntero a un arreglo de valores tipo float que conforman la salida del ecualizador y son enviados a la tarjeta de audio a reproducirse.
 */
-void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g125,int g250,int g500,int g1k,int g2k,int g4k,int g8k,int g16k, float *in, float *out, int aReverb, int dReverb, bool enabledReverb){
+void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g125,int g250,int g500,int g1k,int g2k,int g4k,int g8k,int g16k, float *in, float *out, int aReverb, int dReverb, bool enabledReverb, int typeReverb){
 
     //Se inicializan los punteros que almacenaran la salida de cada filtro.
     float* pf32 = new float[blockSize];
@@ -537,14 +537,17 @@ void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g12
             float y_nD = (n < MAX_D)? lastReverb[n]:out[n-dReverb];
             float x_nD = (n < MAX_D)? lastOut[n]:tmpOut[n-dReverb];
 
-            // y(n) = a * y(n - D) - a * x(n) + x(n - D)
-            // y(n) = reverb
-            // x(n) = tmpOut(n)
-            //final(n) = a * final(n-D) - a * out(n) + out(n-D)
-            out[n] = 0.01 * aReverb * y_nD - 0.01 * aReverb * tmpOut[n] + x_nD;
+            switch (typeReverb) {
+            case 0: // y(n) = a * y(n - D) - a * x(n) + x(n - D)
+                out[n] = 0.01 * aReverb * y_nD - 0.01 * aReverb * tmpOut[n] + x_nD;
+                break;
+            case 1: // y(n) = x(n) + a y(n - D)
+                out[n] = tmpOut[n] +  0.01 * aReverb * y_nD;
+            default:
+                out[n] = 0.01 * aReverb * y_nD - 0.01 * aReverb * tmpOut[n] + x_nD;
+                break;
+            }
 
-            // y(n) = x(n) + a y(n - D)
-            //out[n] = 0.01 * aReverb * y_nD - 0.01 * aReverb * x_nD;
         } else {
             out[n] = tmpOut[n];
         }
