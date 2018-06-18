@@ -177,7 +177,7 @@ bool dspSystem::init(const int sampleRate,const int bufferSize) {
 
   sampleRate_ = sampleRate;
   bufferSize_ = bufferSize;
-  volumeGain_ = 0;
+  volumeGain_ = 25;
   g32_ = 25;
   g64_ = 25;
   g125_ = 25;
@@ -188,7 +188,7 @@ bool dspSystem::init(const int sampleRate,const int bufferSize) {
   g4k_ = 25;
   g8k_ = 25;
   g16k_ = 25;
-  aReverb_ = 75;
+  aReverb_ = 70;
   dReverb_ = 1024;
   reverbEnabled = true;
   typeReverb = 0;

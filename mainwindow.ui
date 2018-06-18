@@ -735,10 +735,10 @@
       <item>
        <widget class="QSlider" name="aSlider">
         <property name="maximum">
-         <number>80</number>
+         <number>90</number>
         </property>
         <property name="value">
-         <number>75</number>
+         <number>70</number>
         </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -754,7 +754,7 @@
          <number>1024</number>
         </property>
         <property name="pageStep">
-         <number>5</number>
+         <number>100</number>
         </property>
         <property name="value">
          <number>1024</number>
@@ -938,7 +938,7 @@
          </palette>
         </property>
         <property name="text">
-         <string>0.8</string>
+         <string>0.9</string>
         </property>
        </widget>
       </item>
@@ -1088,12 +1088,17 @@
      <widget class="QComboBox" name="reverbComboBox">
       <item>
        <property name="text">
-        <string>Reverberador Paso Todo : y(n) = a * y(n - D) - a * x(n) + x(n - D)</string>
+        <string>Reverberador Paso Todo : y(n) = - a * y(n - D) + a * x(n) + x(n - D)</string>
        </property>
       </item>
       <item>
        <property name="text">
         <string>Reverberador Simple :  y(n) = x(n) + a * y(n - D)</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Reverberador Simulador Acústico: y(n) = x(n) + a * x(n - D) - a * B * x(n - D) + a * B * y(n - D)</string>
        </property>
       </item>
      </widget>
