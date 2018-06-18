@@ -100,9 +100,17 @@ void MainWindow::update() {
 
         dspChanged_=false;
     }
-    //Retrieve ouput
 
-    std::cout << "value: " << this->dsp_->mainOut << std::endl;
+    //Retrieve ouput
+    float value = this->dsp_->mainOut*1000*1.5;
+    if(value < 0){
+        value = value * -1;
+    }
+    if(value > 250){
+        value = 220;
+    }
+    std::cout << "value: " << value << std::endl;
+    this->ui->progressBar_2->setValue(value);
 
 }
 
