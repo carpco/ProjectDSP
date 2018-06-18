@@ -104,6 +104,7 @@ public:
     * @param aReverb
     * @param dReverb
     * @param enabledReverb
+    * @param mainOut Salida test
     */
    void filter(int blockSize,
                int volumeGain,
@@ -121,7 +122,8 @@ public:
                float* out,
                int aReverb,
                int dReverb,
-               bool enabledReverb);
+               bool enabledReverb,
+               float* mainOut);
 
    /**
     * @brief filtroGeneral Funcion encargada aplicar el filtrado por DFT a una arreglo de muestras de tipo float.

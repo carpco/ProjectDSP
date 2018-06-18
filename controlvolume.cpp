@@ -497,7 +497,7 @@ void controlVolume::filtroGeneral(int blockSize, int volumeGain, float *in, floa
 * @param in puntero al arreglo de valores de tipo float que conforman la entrada del sistema.
 * @param out puntero a un arreglo de valores tipo float que conforman la salida del ecualizador y son enviados a la tarjeta de audio a reproducirse.
 */
-void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g125,int g250,int g500,int g1k,int g2k,int g4k,int g8k,int g16k, float *in, float *out, int aReverb, int dReverb, bool enabledReverb){
+void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g125,int g250,int g500,int g1k,int g2k,int g4k,int g8k,int g16k, float *in, float *out, int aReverb, int dReverb, bool enabledReverb, float* mainOut){
 
     //Se inicializan los punteros que almacenaran la salida de cada filtro.
     float* pf32 = new float[blockSize];
@@ -543,6 +543,10 @@ void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g12
             //final(n) = a * final(n-D) - a * out(n) + out(n-D)
             out[n] = 0.01 * aReverb * y_nD - 0.01 * aReverb * tmpOut[n] + x_nD;
 
+            if (out[n] != 0){
+                *mainOut = out[n];
+            }
+
             // y(n) = x(n) + a y(n - D)
             //out[n] = 0.01 * aReverb * y_nD - 0.01 * aReverb * x_nD;
         } else {
@@ -555,6 +559,7 @@ void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g12
             lastReverb[n + MAX_D - blockSize] = out[n];
         }
     }
+
 
     //Al realizar el procedimiento una vez se define que ya no es el inicio de la cancion.
     if(inicio){
