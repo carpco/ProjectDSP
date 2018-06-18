@@ -100,6 +100,9 @@ void MainWindow::update() {
 
         dspChanged_=false;
     }
+    //Retrieve ouput
+
+    std::cout << "value: " << this->dsp_->mainOut << std::endl;
 
 }
 
