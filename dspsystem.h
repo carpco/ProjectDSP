@@ -91,6 +91,7 @@ public:
   void updateReverbA(int value);
   void updateReverbD(int value);
   void updateReverbEnabled(bool enabled);
+  void updateReverbType(int value);
 
   /**
    * Sample rate
@@ -124,6 +125,7 @@ public:
   int aReverb_;
   int dReverb_;
   bool reverbEnabled;
+  int typeReverb;
 
   // Constantes Estimación Espectral
   float mainOut;

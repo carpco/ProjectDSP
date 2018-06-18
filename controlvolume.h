@@ -123,7 +123,7 @@ public:
                int aReverb,
                int dReverb,
                bool enabledReverb,
-               float* mainOut);
+               int typeReverb);
 
    /**
     * @brief filtroGeneral Funcion encargada aplicar el filtrado por DFT a una arreglo de muestras de tipo float.

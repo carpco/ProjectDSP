@@ -96,6 +96,7 @@ controlVolume::controlVolume(){
 controlVolume::~controlVolume(){
 
 }
+
 /**
  * @brief inicializarHK Funcion encargada de generar H(k) utilizando la DFT para un filtro especifico.
  * @param puntero puntero a un arreglo donde se almacenaran los valores de H(k).
@@ -445,7 +446,6 @@ void controlVolume::filtroGeneral(int blockSize, int volumeGain, float *in, floa
 
     /*Se realiza la multiplicacion de los valores complejos de X(k)H(k) = Y(k)
       A ser valores complejos dados en parte real e imaginaria se utiliza:
-
         Re{Y(k)} = Re{X(k)}*Re{H(k)} - Im{X(k)}*Im{H(k)}
         Im{Y(k)} = Re{X(k)}*Im{H(k)} + Re{H(k)}*Im{X(k)} */
 
@@ -465,7 +465,7 @@ void controlVolume::filtroGeneral(int blockSize, int volumeGain, float *in, floa
     // CAMBIO
     // Se almacenan los valores actuales en la salida (a partir de M-1), utilizando la ganancia del filtro
     for(int i=0; i<blockSize;i++){
-
+       //out[i] = static_cast<float>(0.02 * (volumeGain)* (y[blockSize+i][REAL]/Div));
        out[i] = static_cast<float>(0.02 * (volumeGain)* (y[blockSize+i][REAL]/Div));
 
     }
@@ -497,7 +497,7 @@ void controlVolume::filtroGeneral(int blockSize, int volumeGain, float *in, floa
 * @param in puntero al arreglo de valores de tipo float que conforman la entrada del sistema.
 * @param out puntero a un arreglo de valores tipo float que conforman la salida del ecualizador y son enviados a la tarjeta de audio a reproducirse.
 */
-void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g125,int g250,int g500,int g1k,int g2k,int g4k,int g8k,int g16k, float *in, float *out, int aReverb, int dReverb, bool enabledReverb, float* mainOut){
+void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g125,int g250,int g500,int g1k,int g2k,int g4k,int g8k,int g16k, float *in, float *out, int aReverb, int dReverb, bool enabledReverb, int typeReverb){
 
     //Se inicializan los punteros que almacenaran la salida de cada filtro.
     float* pf32 = new float[blockSize];
@@ -534,32 +534,47 @@ void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g12
         // Reverberacion
         if(enabledReverb){
 
-            float y_nD = (n < MAX_D)? lastReverb[n]:out[n-dReverb];
-            float x_nD = (n < MAX_D)? lastOut[n]:tmpOut[n-dReverb];
-
-            // y(n) = a * y(n - D) - a * x(n) + x(n - D)
-            // y(n) = reverb
-            // x(n) = tmpOut(n)
-            //final(n) = a * final(n-D) - a * out(n) + out(n-D)
-            out[n] = 0.01 * aReverb * y_nD - 0.01 * aReverb * tmpOut[n] + x_nD;
-
-            if (out[n] != 0){
-                *mainOut = out[n];
+            float y_nD;
+            float x_nD;
+            if(n-dReverb < 0){
+                int index = MAX_D + n - dReverb;
+                y_nD = lastReverb[index];
+                x_nD = lastOut[index];
+            } else {
+                y_nD = out[n-dReverb];
+                x_nD = tmpOut[n-dReverb];
             }
 
-            // y(n) = x(n) + a y(n - D)
-            //out[n] = 0.01 * aReverb * y_nD - 0.01 * aReverb * x_nD;
+            float alpha = 0.01 * aReverb;
+            float beta = alpha * 0.75;
+            float mul = alpha * beta;
+            switch (typeReverb) {
+            case 0: // y(n) = - a * y(n - D) + a * x(n) + x(n - D)
+                out[n] = - alpha * y_nD + alpha * tmpOut[n] + x_nD;
+                break;
+            case 1: // y(n) = x(n) + a y(n - D)
+                out[n] = tmpOut[n] +  alpha * y_nD;
+                break;
+            case 2: // y(n) = x(n) + a * x(n - D) - a * B * x(n - D) + a * B * y(n - D)
+                out[n] = tmpOut[n] + alpha * x_nD -  mul * x_nD + mul * y_nD;
+                break;
+            default:
+                out[n] = - alpha * y_nD + alpha * tmpOut[n] + x_nD;
+                break;
+            }
+
         } else {
             out[n] = tmpOut[n];
         }
 
-        // Almacena los ultimos valores de salida
-        if(n >= blockSize - MAX_D - 1){
-            lastOut[n + MAX_D - blockSize] = tmpOut[n];
-            lastReverb[n + MAX_D - blockSize] = out[n];
-        }
+
     }
 
+    for (int n = 0; n < MAX_D;n++){
+        // Almacena los ultimos valores de salida
+        lastOut[n] = tmpOut[n];
+        lastReverb[n] = out[n];
+    }
 
     //Al realizar el procedimiento una vez se define que ya no es el inicio de la cancion.
     if(inicio){

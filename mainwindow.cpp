@@ -101,17 +101,6 @@ void MainWindow::update() {
         dspChanged_=false;
     }
 
-    //Retrieve ouput
-    float value = this->dsp_->mainOut*1000*1.5;
-    if(value < 0){
-        value = value * -1;
-    }
-    if(value > 250){
-        value = 220;
-    }
-    std::cout << "value: " << value << std::endl;
-    this->ui->progressBar_2->setValue(value);
-
 }
 
 void MainWindow::on_volumeSlider_valueChanged(int value){
@@ -135,7 +124,7 @@ void MainWindow::on_fileButton_clicked() {
     dsp_->cv_->inicio = true;
     jack::stopFiles();
     QStringList::iterator it;
-    for (it=selectedFiles_.begin();it!=selectedFiles_.end();++it) {  
+    for (it=selectedFiles_.begin();it!=selectedFiles_.end();++it) {
       ui->statusBar->showMessage("Reproduciendo: "+*it);
       std::string tmp(qPrintable(*it));
       jack::playAlso(tmp.c_str());
@@ -530,6 +519,13 @@ void MainWindow::on_reverberatorCheckBox_stateChanged(int value){
 
     dsp_->updateReverbEnabled(ui->reverberatorCheckBox->isChecked());
     this->repaint();
+}
+
+void MainWindow::on_reverbComboBox_currentIndexChanged(int value){
+
+    _debug("Reverberation Type: " << value << std::endl);
+
+    dsp_->updateReverbType(value);
 }
 /**
  * @brief MainWindow::paintEvent  Metodo que dibuja en la interfaz las lines y curvas que representan la magnitud de los filtros.
