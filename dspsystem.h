@@ -125,6 +125,9 @@ public:
   int dReverb_;
   bool reverbEnabled;
 
+  // Constantes Estimación Espectral
+  float mainOut;
+
   /**
    * control Volume
    */

@@ -202,7 +202,9 @@ bool dspSystem::process(float* in,float* out) {
   float* tmpIn = in;
   float* tmpOut = out;
 
-  cv_->filter(bufferSize_,volumeGain_,g32_,g64_,g125_,g250_,g500_,g1k_,g2k_,g4k_,g8k_,g16k_,tmpIn,tmpOut,aReverb_, dReverb_, reverbEnabled);
+  cv_->filter(bufferSize_,volumeGain_,g32_,g64_,g125_,g250_,g500_,g1k_,g2k_,g4k_,g8k_,g16k_,tmpIn,tmpOut,aReverb_, dReverb_, reverbEnabled, &mainOut);
+
+
 
   return true;
 }
