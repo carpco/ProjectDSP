@@ -69,7 +69,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     timer_ = new QTimer(this);
     connect(timer_, SIGNAL(timeout()), this, SLOT(drawSpectral()));
-    timer_->start(500);
+    // Estaba en 500
+    timer_->start(50);
 
     dsp_ = new dspSystem;
     jack::init(dsp_);
@@ -150,19 +151,71 @@ void MainWindow::drawSpectral(){
     if(spectral.f8k >= max){spectral.f8k = max;}
     if(spectral.f16k >= max){spectral.f16k = max;}
 
-    this->ui->progress_general->setValue(spectral.main);
-    this->ui->progress_32->setValue(spectral.f32);
-    this->ui->progress_64->setValue(spectral.f64);
-    this->ui->progress_125->setValue(spectral.f125);
-    this->ui->progress_250->setValue(spectral.f250);
-    this->ui->progress_500->setValue(spectral.f500);
-    this->ui->progress_1k->setValue(spectral.f1k);
-    this->ui->progress_2k->setValue(spectral.f2k);
-    this->ui->progress_4k->setValue(spectral.f4k);
-    this->ui->progress_8k->setValue(spectral.f8k);
-    this->ui->progress_16k->setValue(spectral.f16k);
+    QPropertyAnimation *animationmain = new QPropertyAnimation(ui->progress_general, "value");
+    animationmain->setDuration(50);
+    animationmain->setStartValue(ui->progress_general->value());
+    animationmain->setEndValue(spectral.main);
+    animationmain->start();
 
-    std::cout << "value main: " << spectral.main << std::endl;
+    QPropertyAnimation *animation32 = new QPropertyAnimation(ui->progress_32, "value");
+    animation32->setDuration(50);
+    animation32->setStartValue(ui->progress_32->value());
+    animation32->setEndValue(spectral.f32);
+    animation32->start();
+
+    QPropertyAnimation *animation64 = new QPropertyAnimation(ui->progress_64, "value");
+    animation64->setDuration(50);
+    animation64->setStartValue(ui->progress_64->value());
+    animation64->setEndValue(spectral.f64);
+    animation64->start();
+
+    QPropertyAnimation *animation125 = new QPropertyAnimation(ui->progress_125, "value");
+    animation125->setDuration(50);
+    animation125->setStartValue(ui->progress_125->value());
+    animation125->setEndValue(spectral.f125);
+    animation125->start();
+
+    QPropertyAnimation *animation250 = new QPropertyAnimation(ui->progress_250, "value");
+    animation250->setDuration(50);
+    animation250->setStartValue(ui->progress_250->value());
+    animation250->setEndValue(spectral.f250);
+    animation250->start();
+
+    QPropertyAnimation *animation500 = new QPropertyAnimation(ui->progress_500, "value");
+    animation500->setDuration(50);
+    animation500->setStartValue(ui->progress_500->value());
+    animation500->setEndValue(spectral.f500);
+    animation500->start();
+
+    QPropertyAnimation *animation1k = new QPropertyAnimation(ui->progress_1k, "value");
+    animation1k->setDuration(50);
+    animation1k->setStartValue(ui->progress_1k->value());
+    animation1k->setEndValue(spectral.f1k);
+    animation1k->start();
+
+    QPropertyAnimation *animation2k = new QPropertyAnimation(ui->progress_2k, "value");
+    animation2k->setDuration(50);
+    animation2k->setStartValue(ui->progress_2k->value());
+    animation2k->setEndValue(spectral.f2k);
+    animation2k->start();
+
+    QPropertyAnimation *animation4k = new QPropertyAnimation(ui->progress_4k, "value");
+    animation4k->setDuration(50);
+    animation4k->setStartValue(ui->progress_4k->value());
+    animation4k->setEndValue(spectral.f4k);
+    animation4k->start();
+
+    QPropertyAnimation *animation8k = new QPropertyAnimation(ui->progress_8k, "value");
+    animation8k->setDuration(50);
+    animation8k->setStartValue(ui->progress_8k->value());
+    animation8k->setEndValue(spectral.f8k);
+    animation8k->start();
+
+    QPropertyAnimation *animation16k = new QPropertyAnimation(ui->progress_16k, "value");
+    animation16k->setDuration(50);
+    animation16k->setStartValue(ui->progress_16k->value());
+    animation16k->setEndValue(spectral.f16k);
+    animation16k->start();
 }
 
 void MainWindow::on_volumeSlider_valueChanged(int value){

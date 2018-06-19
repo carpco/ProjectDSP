@@ -524,9 +524,6 @@ void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g12
     filtroGeneral(blockSize,g8k,in,pf8k,f8k,datos8k);
     filtroGeneral(blockSize,g16k,in,pf16k,f16k,datos16k);
 
-    // Se va a implementar el siguiente efecto de reverberacion
-    // y(n) = a * y(n - D) - a * x(n) + x(n - D)
-
     // Se define cada elemento de la salida como la suma de las salidas de los filtros para un n, escalado por una constante.
     for (int n=0; n<blockSize;++n){
 
@@ -559,7 +556,7 @@ void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g12
             case 2: // y(n) = x(n) + a * x(n - D) - a * B * x(n - D) + a * B * y(n - D)
                 out[n] = tmpOut[n] + alpha * x_nD -  mul * x_nD + mul * y_nD;
                 break;
-            default:
+            default: // caso 0
                 out[n] = - alpha * y_nD + alpha * tmpOut[n] + x_nD;
                 break;
             }

@@ -165,6 +165,10 @@ void dspSystem::updateReverbEnabled(bool enabled){
     reverbEnabled = enabled;
 }
 
+/**
+ * @brief dspSystem::updateReverbType Metodo que actualiza el tipo de reverberacion que se aplica
+ * @param value entero con la seleccion del tipo de reverberacion
+ */
 void dspSystem::updateReverbType(int value){
 
     typeReverb = value;
