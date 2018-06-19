@@ -26,6 +26,7 @@
  */
 
 #include "controlvolume.h"
+#include "spectralvalues.h"
 #include <cmath>
 #include <iostream>
 using namespace std;
@@ -497,7 +498,7 @@ void controlVolume::filtroGeneral(int blockSize, int volumeGain, float *in, floa
 * @param in puntero al arreglo de valores de tipo float que conforman la entrada del sistema.
 * @param out puntero a un arreglo de valores tipo float que conforman la salida del ecualizador y son enviados a la tarjeta de audio a reproducirse.
 */
-void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g125,int g250,int g500,int g1k,int g2k,int g4k,int g8k,int g16k, float *in, float *out, int aReverb, int dReverb, bool enabledReverb, int typeReverb){
+void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g125,int g250,int g500,int g1k,int g2k,int g4k,int g8k,int g16k, float *in, float *out, int aReverb, int dReverb, bool enabledReverb, int typeReverb, struct Spectral* spectral){
 
     //Se inicializan los punteros que almacenaran la salida de cada filtro.
     float* pf32 = new float[blockSize];
@@ -580,6 +581,22 @@ void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g12
     if(inicio){
         inicio = false;
     }
+
+    spectral->main = out[blockSize/2];
+    spectral->f32 = pf32[blockSize/2];
+    spectral->f64 =  pf64[blockSize/2];
+    spectral->f125 = pf125[blockSize/2];
+    spectral->f250 = pf250[blockSize/2];
+    spectral->f500 = pf500[blockSize/2];
+    spectral->f1k = pf1k[blockSize/2];
+    spectral->f2k = pf2k[blockSize/2];
+    spectral->f4k = pf4k[blockSize/2];
+    spectral->f8k = pf8k[blockSize/2];
+    spectral->f16k = pf16k[blockSize/2];
+
+    //Measure
+    // 32Hz Filter
+
 
     //Se libera la memoria solicitada.
     delete pf32;

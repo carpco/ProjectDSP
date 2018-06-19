@@ -29,6 +29,7 @@
 #ifndef CONTROLVOLUME_H
 #define CONTROLVOLUME_H
 #include <fftw3.h>
+#include "spectralvalues.h"
 
 /**
  * Control Volume class
@@ -123,7 +124,8 @@ public:
                int aReverb,
                int dReverb,
                bool enabledReverb,
-               int typeReverb);
+               int typeReverb,
+               struct Spectral* spectral);
 
    /**
     * @brief filtroGeneral Funcion encargada aplicar el filtrado por DFT a una arreglo de muestras de tipo float.
