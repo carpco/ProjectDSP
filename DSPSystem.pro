@@ -26,7 +26,8 @@ HEADERS  += mainwindow.h \
     controlvolume.h \
     dspsystem.h \
     jack.h \
-    processor.h
+    processor.h \
+    spectralvalues.h
 
 FORMS    += mainwindow.ui
 
