@@ -137,6 +137,7 @@ public:
     * @param temporal puntero al arreglo donde se almacenan los valores de la salida anterior que no se utilizaron y se guardaran los M-1 datos que sobren al filtrar.
     */
    void filtroGeneral(int blockSize,int volumeGain, float* in, float* out,fftw_complex *hk,float* temporal);
+   void spec(float* in, float* out, struct Spectral* spectral, int blockSize);
 
 private:
 

@@ -29,6 +29,7 @@
 #include "spectralvalues.h"
 #include <cmath>
 #include <iostream>
+#include <stdlib.h>
 using namespace std;
 
 #define REAL 0
@@ -481,6 +482,55 @@ void controlVolume::filtroGeneral(int blockSize, int volumeGain, float *in, floa
     fftw_cleanup();
 }
 
+void controlVolume::spec(float* in, float* out, struct Spectral* spectral, int blockSize){
+
+    float* unprocessed = in;
+    float* processed = (float*) calloc(blockSize, sizeof(float)); // Create an array with 0's
+
+    // Define constant a for differences equation
+    const float a32 = 0.1657;
+    const float a64 = 0.1801;
+    const float a125 = 0.2299;
+    const float a250 = 0.3109;
+    const float a500 = 0.4093;
+    const float a1k = 0.5983;
+    const float a2k = 0.6409;
+    const float a4k = 0.7710;
+    const float a8k = 0.8009;
+    const float a16k = 0.9399;
+
+    //Magnitude
+    const float k = 1/blockSize;
+
+    // Iterate over each sample of data
+    for(int n = 0; n < blockSize; ++n){
+        //Check if exists a previous out sample of the system
+        if ((n-1) < 0){
+            spectral->f32 = k*unprocessed[n];
+            spectral->f64 = k*unprocessed[n];
+            spectral->f125 = k*unprocessed[n];
+            spectral->f250 = k*unprocessed[n];
+            spectral->f500 = k*unprocessed[n];
+            spectral->f1k = k*unprocessed[n];
+            spectral->f2k = k*unprocessed[n];
+            spectral->f4k = k*unprocessed[n];
+            spectral->f8k = k*unprocessed[n];
+            spectral->f16k = k*unprocessed[n];
+        }else{
+            spectral->f32 = a32*processed[n-1] + k*unprocessed[n];
+            spectral->f64 = a64*processed[n-1] + k*unprocessed[n];
+            spectral->f125 = a125*processed[n-1] + k*unprocessed[n];
+            spectral->f250 = a250*processed[n-1] + k*unprocessed[n];
+            spectral->f500 = a500*processed[n-1] + k*unprocessed[n];
+            spectral->f1k = a1k*processed[n-1] + k*unprocessed[n];
+            spectral->f2k = a2k*processed[n-1] + k*unprocessed[n];
+            spectral->f4k = a4k*processed[n-1] + k*unprocessed[n];
+            spectral->f8k = a8k*processed[n-1] + k*unprocessed[n];
+            spectral->f16k = a16k*processed[n-1] + k*unprocessed[n];
+        }
+    }
+}
+
 /**
 * @brief filter Funcion encargada de filtrar la entrada de datos pasandola por distintos filtros y luego sumando la salida de cada uno.
 * @param blockSize cantidad de muestras que contiene la entrada.
@@ -499,6 +549,10 @@ void controlVolume::filtroGeneral(int blockSize, int volumeGain, float *in, floa
 * @param out puntero a un arreglo de valores tipo float que conforman la salida del ecualizador y son enviados a la tarjeta de audio a reproducirse.
 */
 void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g125,int g250,int g500,int g1k,int g2k,int g4k,int g8k,int g16k, float *in, float *out, int aReverb, int dReverb, bool enabledReverb, int typeReverb, struct Spectral* spectral){
+
+    //Call spec system
+    this->spec(in,out, spectral, blockSize);
+
 
     //Se inicializan los punteros que almacenaran la salida de cada filtro.
     float* pf32 = new float[blockSize];
@@ -579,6 +633,9 @@ void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g12
         inicio = false;
     }
 
+
+
+
     spectral->main = out[blockSize/2];
     spectral->f32 = pf32[blockSize/2];
     spectral->f64 =  pf64[blockSize/2];
@@ -590,10 +647,6 @@ void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g12
     spectral->f4k = pf4k[blockSize/2];
     spectral->f8k = pf8k[blockSize/2];
     spectral->f16k = pf16k[blockSize/2];
-
-    //Measure
-    // 32Hz Filter
-
 
     //Se libera la memoria solicitada.
     delete pf32;
@@ -607,3 +660,4 @@ void controlVolume::filter(int blockSize, int volumeGain,int g32,int g64,int g12
     delete pf8k;
     delete pf16k;
 }
+
