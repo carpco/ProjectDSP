@@ -1,0 +1,4 @@
+#ifndef SPECTRALVALUES_H
+#define SPECTRALVALUES_H
+
+#endif // SPECTRALVALUES_H

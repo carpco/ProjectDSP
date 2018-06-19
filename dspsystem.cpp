@@ -26,6 +26,7 @@
  */
 
 #include "dspsystem.h"
+#include "spectralvalues.h"
 #include <cstring>
 
 #undef _DSP_DEBUG
@@ -208,7 +209,7 @@ bool dspSystem::process(float* in,float* out) {
   float* tmpIn = in;
   float* tmpOut = out;
 
-  cv_->filter(bufferSize_,volumeGain_,g32_,g64_,g125_,g250_,g500_,g1k_,g2k_,g4k_,g8k_,g16k_,tmpIn,tmpOut,aReverb_, dReverb_, reverbEnabled, typeReverb);
+  cv_->filter(bufferSize_,volumeGain_,g32_,g64_,g125_,g250_,g500_,g1k_,g2k_,g4k_,g8k_,g16k_,tmpIn,tmpOut,aReverb_, dReverb_, reverbEnabled, typeReverb,&this->spectral_);
 
   return true;
 }

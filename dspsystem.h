@@ -30,6 +30,7 @@
 
 #include "processor.h"
 #include "controlvolume.h"
+#include "spectralvalues.h"
 
 class dspSystem : public processor {
 public:
@@ -127,8 +128,8 @@ public:
   bool reverbEnabled;
   int typeReverb;
 
-  // Constantes Estimación Espectral
-  float mainOut;
+  // Struct Estimación Espectral
+  Spectral spectral_;
 
   /**
    * control Volume
