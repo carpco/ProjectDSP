@@ -67,6 +67,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(timer_, SIGNAL(timeout()), this, SLOT(update()));
     timer_->start(250);
 
+    timer_ = new QTimer(this);
+    connect(timer_, SIGNAL(timeout()), this, SLOT(drawSpectral()));
+    timer_->start(500);
+
     dsp_ = new dspSystem;
     jack::init(dsp_);
 
@@ -101,6 +105,64 @@ void MainWindow::update() {
         dspChanged_=false;
     }
 
+}
+
+void MainWindow::drawSpectral(){
+    struct Spectral spectral = this->dsp_->spectral_;
+
+    const int min = 0;
+    const int max = 100;
+    const int scale = 1000;
+
+    if(spectral.main < min){spectral.main = spectral.main * -1;}
+    if(spectral.f32 < min){spectral.f32 = spectral.f32 * -1;}
+    if(spectral.f64 < min){spectral.f64 = spectral.f64 * -1;}
+    if(spectral.f125 < min){spectral.f125 = spectral.f125 * -1;}
+    if(spectral.f250 < min){spectral.f250 = spectral.f250 * -1;}
+    if(spectral.f500 < min){spectral.f500 = spectral.f500 * -1;}
+    if(spectral.f1k < min){spectral.f1k = spectral.f1k * -1;}
+    if(spectral.f2k < min){spectral.f2k = spectral.f2k * -1;}
+    if(spectral.f4k < min){spectral.f4k = spectral.f4k * -1;}
+    if(spectral.f8k < min){spectral.f8k = spectral.f8k * -1;}
+    if(spectral.f16k < min){spectral.f16k = spectral.f16k * -1;}
+
+    spectral.main = spectral.main * scale;
+    spectral.f32 = spectral.f32 * scale;
+    spectral.f64 = spectral.f64 * scale;
+    spectral.f125 = spectral.f125 * scale;
+    spectral.f250 = spectral.f250 * scale;
+    spectral.f500 = spectral.f500 * scale;
+    spectral.f1k = spectral.f1k * scale;
+    spectral.f2k = spectral.f2k * scale;
+    spectral.f4k = spectral.f4k * scale;
+    spectral.f8k = spectral.f8k * scale;
+    spectral.f16k = spectral.f16k * scale;
+
+    if(spectral.main >= max){spectral.main = max;}
+    if(spectral.f32 >= max){spectral.f32 = max;}
+    if(spectral.f64 >= max){spectral.f64 = max;}
+    if(spectral.f125 >= max){spectral.f125 = max;}
+    if(spectral.f250 >= max){spectral.f250 = max;}
+    if(spectral.f500 >= max){spectral.f500 = max;}
+    if(spectral.f1k >= max){spectral.f1k = max;}
+    if(spectral.f2k >= max){spectral.f2k = max;}
+    if(spectral.f4k >= max){spectral.f4k = max;}
+    if(spectral.f8k >= max){spectral.f8k = max;}
+    if(spectral.f16k >= max){spectral.f16k = max;}
+
+    this->ui->progress_general->setValue(spectral.main);
+    this->ui->progress_32->setValue(spectral.f32);
+    this->ui->progress_64->setValue(spectral.f64);
+    this->ui->progress_125->setValue(spectral.f125);
+    this->ui->progress_250->setValue(spectral.f250);
+    this->ui->progress_500->setValue(spectral.f500);
+    this->ui->progress_1k->setValue(spectral.f1k);
+    this->ui->progress_2k->setValue(spectral.f2k);
+    this->ui->progress_4k->setValue(spectral.f4k);
+    this->ui->progress_8k->setValue(spectral.f8k);
+    this->ui->progress_16k->setValue(spectral.f16k);
+
+    std::cout << "value main: " << spectral.main << std::endl;
 }
 
 void MainWindow::on_volumeSlider_valueChanged(int value){

@@ -122,6 +122,7 @@ private:
      void on_dSlider_valueChanged(int value);
      void on_reverberatorCheckBox_stateChanged(int value);
      void on_reverbComboBox_currentIndexChanged(int value);
+     void drawSpectral();
 };
 
 
